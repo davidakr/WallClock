@@ -11,7 +11,7 @@ void ClockModule::Setup() {
   Serial.println(udp.localPort()); 
 }
 
-void ClockModule::RequestTime() {
+void ClockModule::requestTime() {
   Serial.println("Getting Time");
   IPAddress timeServer(129, 6, 15, 28); // time.nist.gov NTP server
   sendNTPpacket(timeServer); // send an NTP packet to a time server
@@ -40,7 +40,7 @@ unsigned long ClockModule::sendNTPpacket(IPAddress & address) {
   udp.endPacket();
 }
 
-bool ClockModule::CheckTime() {
+bool ClockModule::checkTime() {
   int cb = udp.parsePacket();
   if (!cb) {
     Serial.println("no packet yet");
@@ -67,13 +67,13 @@ bool ClockModule::CheckTime() {
     // subtract seventy years:
     epoch = secsSince1900 - seventyYears;
     LastNTP = millis();
-    TimeCheckLoop = 0;
+    timeCheckLoop = 0;
   
     //Set RTC
     setRTC();
 
-    //Update for Timezone
-    hourstr = String(hour(epoch) + TIMEZONE);
+    //Update for timezone
+    hourstr = String(hour(epoch) + timezone);
     minstr = String(minute(epoch));
     secondstr = String(second(epoch));
     yearstr = String(year(epoch));
@@ -119,7 +119,7 @@ bool ClockModule::isDST(int days, int months, int dow, int hours) {
 }
 
 void ClockModule::setRTC() {
-    Clock.setHour(hour(epoch) + TIMEZONE);
+    Clock.setHour(hour(epoch) + timezone);
     Clock.setMinute(minute(epoch));
     Clock.setSecond(second(epoch));
     Clock.setYear(year(epoch));
@@ -127,7 +127,7 @@ void ClockModule::setRTC() {
     Clock.setDoW(weekday(epoch));
 
     //Check for DST   
-    if (isDST(day(epoch), month(epoch), weekday(epoch),hour(epoch) + TIMEZONE)) {
+    if (isDST(day(epoch), month(epoch), weekday(epoch),hour(epoch) + timezone)) {
       Serial.println("We have summer time");
       Clock.setHour(Clock.getHour(h12, PM)+1);
     } else {
@@ -136,13 +136,13 @@ void ClockModule::setRTC() {
 }
 
 void ClockModule::setClockModule() {
-  RequestTime();
+  requestTime();
   delay(2000);
-  while (!CheckTime()) {
+  while (!checkTime()) {
     delay(2000);
-    TimeCheckLoop++;
-    if (TimeCheckLoop > 5) {
-      RequestTime();
+    timeCheckLoop++;
+    if (timeCheckLoop > 5) {
+      requestTime();
     }
   }
 }

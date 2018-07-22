@@ -18,8 +18,8 @@ public:
   String yearstr;
   String monthstr;
   String daystr;
-  int TIMEZONE = 1;
-  int TimeCheckLoop;
+  int timezone = 1;
+  int timeCheckLoop;
   int localPort = 2390;
   static const int NTP_PACKET_SIZE = 48;    // NTP time stamp is in the first 48 bytes of the message
   byte packetBuffer[ NTP_PACKET_SIZE];      //buffer to hold incoming and outgoing packets
@@ -30,9 +30,9 @@ public:
   bool h12;
   bool PM;
   void Setup();
-  void RequestTime();
+  void requestTime();
   unsigned long sendNTPpacket (IPAddress & address);
-  bool CheckTime();
+  bool checkTime();
   bool isDST(int days, int months, int dow, int hours);
   void setRTC();
   void setClockModule();

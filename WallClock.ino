@@ -19,6 +19,7 @@ void setup() {
   led.Setup();
   clockModule.Setup();
   wifiConnection.Start();
+  clockModule.setClockModule();
 }
 
 void loop() {

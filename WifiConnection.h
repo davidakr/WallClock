@@ -18,6 +18,7 @@ class WifiConnection {
     WiFiManager wifiManager;
     WiFiServer server;
     WiFiClient client;
+    void beginWifi();
     void Start();
     void WifiTraffic();
     JsonObject& prepareResponse(JsonBuffer& jsonBuffer);

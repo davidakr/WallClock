@@ -40,17 +40,17 @@ void setup() {
   clockModule.setClockModule();
 
   // get initial values from EEPROM
-  STATE_STATUS = EEPROM.read(addr_STATE_STATUS);
-  BRIGHTNESS_STATUS = EEPROM.read(addr_BRIGHTNESS_STATUS);
-  clockModule.timezone = EEPROM.read(addr_timezone);
-  BRIGHTNESS_VALUE = EEPROM.read(addr_brightness);
-  RED_RGB = EEPROM.read(addr_red);
-  GREEN_RGB = EEPROM.read(addr_green);
-  BLUE_RGB = EEPROM.read(addr_blue); 
+//  STATE_STATUS = EEPROM.read(addr_STATE_STATUS);
+//  BRIGHTNESS_STATUS = EEPROM.read(addr_BRIGHTNESS_STATUS);
+//  clockModule.timezone = EEPROM.read(addr_timezone);
+//  BRIGHTNESS_VALUE = EEPROM.read(addr_brightness);
+//  RED_RGB = EEPROM.read(addr_red);
+//  GREEN_RGB = EEPROM.read(addr_green);
+//  BLUE_RGB = EEPROM.read(addr_blue); 
 }
 
 void loop() {
-  
+  Serial.println("run"); 
 }
 
 

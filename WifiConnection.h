@@ -7,20 +7,21 @@
 #include "ArduinoJson.h"
 #include "BufferedPrint.h"
 #include "GlobalProperties.h"
+#include "EEPROM.h"
  
 class WifiConnection {
   public:
     WifiConnection();
+    void beginWifi();
+    void Start();
+    void WifiTraffic();
+
+  private:
     int pinWifiLed = 16;
-    int STATE_BRIGHTNESS = 1;
-    int STATE_STATUS = 1;
     char HTML_String[5000];
     WiFiManager wifiManager;
     WiFiServer server;
     WiFiClient client;
-    void beginWifi();
-    void Start();
-    void WifiTraffic();
     JsonObject& prepareResponse(JsonBuffer& jsonBuffer);
     bool readRequest(WiFiClient& client);
     int FindStart(const char * such, const char * str);
@@ -28,6 +29,7 @@ class WifiConnection {
     int PickDec(const char * tx, int idx );
     int PickParameter(const char * par, char * str);
     void sendNotFound();
+    
 };
 
 #endif

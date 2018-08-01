@@ -11,6 +11,7 @@
 Led led;
 ClockModule clockModule;
 WifiConnection wifiConnection;
+PhotocellSensor photocellSensor;
 
 //address for EEPROM
 int addr_red = 0;
@@ -21,12 +22,20 @@ int addr_BRIGHTNESS_STATUS = 8;
 int addr_brightness = 10;
 int addr_timezone = 12;
 
+//global variables
 int RED_RGB;
 int GREEN_RGB;
 int BLUE_RGB;
 int BRIGHTNESS_VALUE;
 int BRIGHTNESS_STATUS;
+int STATE_VALUE;
 int STATE_STATUS;
+int TIMEZONE;
+int TEMPERATURE;
+
+//timer variables
+unsigned long previousMillis = 0;        
+const long intervalLED = 250; 
 
 
 void setup() {
@@ -40,17 +49,31 @@ void setup() {
   clockModule.setClockModule();
 
   // get initial values from EEPROM
-//  STATE_STATUS = EEPROM.read(addr_STATE_STATUS);
-//  BRIGHTNESS_STATUS = EEPROM.read(addr_BRIGHTNESS_STATUS);
-//  clockModule.timezone = EEPROM.read(addr_timezone);
-//  BRIGHTNESS_VALUE = EEPROM.read(addr_brightness);
-//  RED_RGB = EEPROM.read(addr_red);
-//  GREEN_RGB = EEPROM.read(addr_green);
-//  BLUE_RGB = EEPROM.read(addr_blue); 
+  STATE_STATUS = EEPROM.read(addr_STATE_STATUS);
+  BRIGHTNESS_STATUS = EEPROM.read(addr_BRIGHTNESS_STATUS);
+  BRIGHTNESS_VALUE = EEPROM.read(addr_brightness);
+  TIMEZONE = EEPROM.read(addr_timezone);
+  RED_RGB = EEPROM.read(addr_red);
+  GREEN_RGB = EEPROM.read(addr_green);
+  BLUE_RGB = EEPROM.read(addr_blue);
 }
 
 void loop() {
-  Serial.println("run"); 
+   wifiConnection.WifiTraffic();
+
+   unsigned long currentMillis = millis();
+
+   if (currentMillis - previousMillis >= intervalLED){
+      previousMillis = currentMillis;
+      if(STATE_STATUS == 1){ 
+        BRIGHTNESS_VALUE = photocellSensor.readPhotocell();       
+      }else{      
+         
+      }
+   }
+   //need to request time in the night
+
+   
 }
 
 

@@ -5,15 +5,11 @@
  
 class Led {
   public:
-    int red;
-    int blue;
-    int green;
-    int brightness;
-    
+    void Setup();
+  private:    
     int pinLeds = 0;
     int numberLeds = 130;
     Adafruit_NeoPixel pixels = Adafruit_NeoPixel(numberLeds, pinLeds, NEO_RGB + NEO_KHZ800);
-    void Setup();
 };
 
 #endif

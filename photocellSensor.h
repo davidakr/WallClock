@@ -1,13 +1,14 @@
 #ifndef PhotoCellSensor_h
 #define PhotoCellSensor_h
 
-class PhotoCellSensor {
+#include "Arduino.h"
+
+class PhotocellSensor {
 public:
-  int red;
-  int blue;
-  int green;
-  int brightness;
-  void readPhotocell();
+  int readPhotocell();
+private:
+  int photocellPin = A0;     
+  int avgPhoto[3]= {0, 0, 0};
 };
 
 #endif

@@ -1,5 +1,8 @@
 #include "ClockModule.h"
 
+ClockModule::ClockModule():timeServer(129, 6, 15, 28) {
+}
+
 void ClockModule::Setup() {
   Wire.begin();
   //RTC Setup  false = 24h, true = 12h
@@ -13,7 +16,6 @@ void ClockModule::Setup() {
 
 void ClockModule::requestTime() {
   Serial.println("Getting Time");
-  IPAddress timeServer(129, 6, 15, 28); // time.nist.gov NTP server
   sendNTPpacket(timeServer); // send an NTP packet to a time server
 }
 
@@ -73,12 +75,12 @@ bool ClockModule::checkTime() {
     setRTC();
 
     //Update for timezone
-    hourstr = String(hour(epoch) + timezone);
-    minstr = String(minute(epoch));
-    secondstr = String(second(epoch));
-    yearstr = String(year(epoch));
-    monthstr = String(month(epoch));
-    daystr = String(day(epoch));
+    String hourstr = String(hour(epoch) + TIMEZONE);
+    String minstr = String(minute(epoch));
+    String secondstr = String(second(epoch));
+    String yearstr = String(year(epoch));
+    String monthstr = String(month(epoch));
+    String daystr = String(day(epoch));
     Serial.print("Unix time = ");
     Serial.println(hourstr + ":" + minstr + ":" + secondstr + ", " + daystr + "." + monthstr + "." + yearstr );
    
@@ -119,7 +121,7 @@ bool ClockModule::isDST(int days, int months, int dow, int hours) {
 }
 
 void ClockModule::setRTC() {
-    Clock.setHour(hour(epoch) + timezone);
+    Clock.setHour(hour(epoch) + TIMEZONE);
     Clock.setMinute(minute(epoch));
     Clock.setSecond(second(epoch));
     Clock.setYear(year(epoch));
@@ -127,7 +129,7 @@ void ClockModule::setRTC() {
     Clock.setDoW(weekday(epoch));
 
     //Check for DST   
-    if (isDST(day(epoch), month(epoch), weekday(epoch),hour(epoch) + timezone)) {
+    if (isDST(day(epoch), month(epoch), weekday(epoch),hour(epoch) + TIMEZONE)) {
       Serial.println("We have summer time");
       Clock.setHour(Clock.getHour(h12, PM)+1);
     } else {

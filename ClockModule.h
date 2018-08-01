@@ -19,8 +19,8 @@ class ClockModule {
     static const int NTP_PACKET_SIZE = 48;    // NTP time stamp is in the first 48 bytes of the message
     byte packetBuffer[ NTP_PACKET_SIZE];      //buffer to hold incoming and outgoing packets
     IPAddress timeServer; // time.nist.gov NTP server
-    unsigned long epoch = 0;
-    unsigned long LastNTP = 0;
+    unsigned long epoch;
+    unsigned long LastNTP;
     WiFiUDP udp;
     DS3231 Clock;
     bool h12;

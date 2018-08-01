@@ -65,7 +65,7 @@ void loop() {
 
    if (currentMillis - previousMillis >= intervalLED){
       previousMillis = currentMillis;
-      if(STATE_STATUS == 1){ 
+      if(BRIGHTNESS_STATUS == 1){ 
         BRIGHTNESS_VALUE = photocellSensor.readPhotocell();       
       }else{      
          

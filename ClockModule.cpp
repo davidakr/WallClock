@@ -121,20 +121,20 @@ bool ClockModule::isDST(int days, int months, int dow, int hours) {
 }
 
 void ClockModule::setRTC() {
-    Clock.setHour(hour(epoch) + TIMEZONE);
-    Clock.setMinute(minute(epoch));
-    Clock.setSecond(second(epoch));
-    Clock.setYear(year(epoch));
-    Clock.setMonth(month(epoch));
-    Clock.setDoW(weekday(epoch));
-
-    //Check for DST   
-    if (isDST(day(epoch), month(epoch), weekday(epoch),hour(epoch) + TIMEZONE)) {
-      Serial.println("We have summer time");
-      Clock.setHour(Clock.getHour(h12, PM)+1);
-    } else {
-      Serial.println("We have winter time");
-    }   
+  Clock.setHour(hour(epoch) + TIMEZONE);
+  Clock.setMinute(minute(epoch));
+  Clock.setSecond(second(epoch));
+  Clock.setYear(year(epoch));
+  Clock.setMonth(month(epoch));
+  Clock.setDoW(weekday(epoch));
+  
+  //Check for DST   
+  if (isDST(day(epoch), month(epoch), weekday(epoch),hour(epoch) + TIMEZONE)) {
+    Serial.println("We have summer time");
+    Clock.setHour(Clock.getHour(h12, PM)+1);
+  } else {
+    Serial.println("We have winter time");
+  }   
 }
 
 void ClockModule::setClockModule() {

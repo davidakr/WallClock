@@ -1,25 +1,16 @@
 #include "Led.h"
 
 void Led::Setup() {
-  pixels.begin(); // This initializes the NeoPixel library.
-  pixels.setBrightness(255);
-  pixels.show();
+  delay(2000); // power-up safety delay
+  FastLED.addLeds<LED_TYPE, LED_PIN>(leds, NUM_LEDS);
+  FastLED.setBrightness(BRIGHTNESS_VALUE);
   Serial.println("Leds initialized");
 }
 
-void Led::setLedPixel(int arrayInt[], int arraySize, int toAdd, int red, int green, int blue, int brightness) {
-  for (int i=0 + toAdd; i < 21 + toAdd; i++){ 
-    if(!arrayIncludeElement(arrayInt,i)){
-      if(pixels.getPixelColor(i) != pixels.Color(0,0,0)) {
-        pixels.setPixelColor(i, 0, 0, 0,0);        
-      }
-    }
-  }   
-   for (int i=0; i < arraySize; i++){
-      //if(pixels.getPixelColor(i) != pixels.Color(green, red, blue)) {      
-      pixels.setPixelColor(arrayInt[i] + toAdd, green, red, blue,brightness);     
-      //}      
-   }      
+void Led::setLedPixel(int arrayInt[], int arraySize, int toAdd, int red, int green, int blue, int brightness) {   
+  for (int i=0; i < arraySize; i++){
+    leds[arrayInt[i] + toAdd].setRGB( RED_RGB, GREEN_RGB, BLUE_RGB);             
+  }      
 }
 
 boolean Led::arrayIncludeElement(int arrayInt[], int element) {
@@ -43,7 +34,9 @@ void Led::setLedTime(int Red, int Blue, int Green){
   int zehnerMinute = minuten / 10;
   int einerStunde = stunde % 10;
   int zehnerStunde = stunde / 10;
-  int ledBrightness = 0; 
+  int ledBrightness = 0;
+
+  FastLED.clear(); 
       
   switch (einerSekunde) {
     case 0: setLedPixel(zero,sizeof(zero)/sizeof(*zero), 0,Red,Green,Blue,ledBrightness); break;
@@ -123,7 +116,7 @@ void Led::setLedTime(int Red, int Blue, int Green){
     case 8: setLedPixel(eight,sizeof(eight)/sizeof(*eight), 109,Red,Green,Blue,ledBrightness); break;
     case 9: setLedPixel(nine,sizeof(nine)/sizeof(*nine), 109,Red,Green,Blue,ledBrightness); break;     
   }
-        
-  pixels.setBrightness(0);
-  pixels.show();  
+
+  FastLED.setBrightness(BRIGHTNESS_VALUE);
+  FastLED.show();
 }

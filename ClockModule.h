@@ -13,6 +13,9 @@ class ClockModule {
     ClockModule(); 
     void Setup();
     void setClockModule();
+    int getSeconds();
+    int getMinutes();
+    int getHours();
   private:
     int localPort = 2390;
     int timeCheckLoop;

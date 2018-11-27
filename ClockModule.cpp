@@ -149,3 +149,15 @@ void ClockModule::setClockModule() {
   }
 }
 
+int ClockModule::getSeconds() {
+  return Clock.getSecond(); 
+}
+
+int ClockModule::getMinutes() {
+  return Clock.getMinute(); 
+}
+
+int ClockModule::getHours() {
+  return Clock.getHour(h12, PM); 
+}
+

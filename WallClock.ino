@@ -43,11 +43,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("WallClock");
 
-  led.Setup();
-  wifiConnection.Start();
-  clockModule.Setup();
-  clockModule.setClockModule();
-
   // get initial values from EEPROM
   STATE_STATUS = EEPROM.read(addr_STATE_STATUS);
   BRIGHTNESS_STATUS = EEPROM.read(addr_BRIGHTNESS_STATUS);
@@ -56,19 +51,24 @@ void setup() {
   RED_RGB = EEPROM.read(addr_red);
   GREEN_RGB = EEPROM.read(addr_green);
   BLUE_RGB = EEPROM.read(addr_blue);
+
+  //general setup
+  led.Setup();
+  wifiConnection.Start();
+  clockModule.Setup();
+  clockModule.setClockModule();
 }
 
 void loop() {
    wifiConnection.WifiTraffic();
-
-   unsigned long currentMillis = millis();
+   led.setLedTime(clockModule.getSeconds(),clockModule.getMinutes(),clockModule.getHours());
+   signed long currentMillis = millis();
 
    if (currentMillis - previousMillis >= intervalLED){
       previousMillis = currentMillis;
       if(BRIGHTNESS_STATUS == 1){ 
         BRIGHTNESS_VALUE = photocellSensor.readPhotocell();       
-      }else{      
-         
+      }else{              
       }
    }
    //need to request time in the night

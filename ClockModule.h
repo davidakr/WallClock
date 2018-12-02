@@ -12,7 +12,7 @@ class ClockModule {
   public:
     ClockModule(); 
     void Setup();
-    void setClockModule();
+    void getNTP();
     int getSeconds();
     int getMinutes();
     int getHours();

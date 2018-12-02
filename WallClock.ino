@@ -33,6 +33,11 @@ int STATE_STATUS;
 int TIMEZONE;
 int TEMPERATURE;
 
+//update time
+int updateHours = 4;
+int updateMinutes = 0;
+int updateSeconds = 0;
+
 //timer variables
 unsigned long previousMillis = 0;        
 const long intervalLED = 250; 
@@ -56,7 +61,7 @@ void setup() {
   led.Setup();
   wifiConnection.Start();
   clockModule.Setup();
-  clockModule.setClockModule();
+  clockModule.getNTP();
 }
 
 void loop() {
@@ -64,16 +69,20 @@ void loop() {
    led.setLedTime(clockModule.getSeconds(),clockModule.getMinutes(),clockModule.getHours());
    signed long currentMillis = millis();
 
+   // intervall to read photocell
    if (currentMillis - previousMillis >= intervalLED){
       previousMillis = currentMillis;
-      if(BRIGHTNESS_STATUS == 1){ 
+      if(!BRIGHTNESS_STATUS){ 
         BRIGHTNESS_VALUE = photocellSensor.readPhotocell();       
-      }else{              
+      }else{ 
+                     
       }
    }
-   //need to request time in the night
-
    
+   //update time from ntp
+   if(clockModule.getHours() == updateHours && clockModule.getMinutes() == updateMinutes && clockModule.getSeconds() == updateSeconds) {
+      clockModule.getNTP();
+   }  
 }
 
 

@@ -137,7 +137,7 @@ void ClockModule::setRTC() {
   }   
 }
 
-void ClockModule::setClockModule() {
+void ClockModule::getNTP() {
   requestTime();
   delay(2000);
   while (!checkTime()) {

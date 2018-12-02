@@ -9,6 +9,8 @@ public:
 private:
   int photocellPin = A0;     
   int avgPhoto[3]= {0, 0, 0};
+  int calculateValue (int number);
+  int minValue = 10;
 };
 
 #endif

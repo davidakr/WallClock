@@ -20,7 +20,6 @@ class Led {
     void setLedPixel(int arrayInt[], int arraySize, int toAdd);
     boolean arrayIncludeElement(int arrayInt[], int element);
 
-
     //Numbers for Led Display
     int all[21] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
     int zero [18] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};

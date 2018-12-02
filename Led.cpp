@@ -38,6 +38,12 @@ void Led::setLedTime(int seconds, int minutes, int hours){
   int zehnerMinute = minutes / 10;
   int einerStunde = hours % 10;
   int zehnerStunde = hours / 10;
+
+  if(STATE_STATUS){
+    pixels.setBrightness(BRIGHTNESS_VALUE);
+  } else {
+    pixels.setBrightness(0);
+  }
       
   switch (einerSekunde) {
     case 0: setLedPixel(zero,sizeof(zero)/sizeof(*zero), 0); break;
@@ -118,6 +124,8 @@ void Led::setLedTime(int seconds, int minutes, int hours){
     case 9: setLedPixel(nine,sizeof(nine)/sizeof(*nine), 109); break;     
   }
 
-  pixels.setBrightness(100);
+
+  
+  //pixels.setBrightness(100);
   pixels.show();
 }

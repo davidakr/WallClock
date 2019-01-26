@@ -52,10 +52,11 @@ void setup() {
   STATE_STATUS = EEPROM.read(addr_STATE_STATUS);
   BRIGHTNESS_STATUS = EEPROM.read(addr_BRIGHTNESS_STATUS);
   BRIGHTNESS_VALUE = EEPROM.read(addr_brightness);
-  TIMEZONE = EEPROM.read(addr_timezone);
   RED_RGB = EEPROM.read(addr_red);
   GREEN_RGB = EEPROM.read(addr_green);
   BLUE_RGB = EEPROM.read(addr_blue);
+  //TIMEZONE = EEPROM.read(addr_timezone);
+  TIMEZONE = 1;
 
   //general setup
   led.Setup();
@@ -66,23 +67,15 @@ void setup() {
 
 void loop() {
    wifiConnection.WifiTraffic();
-   led.setLedTime(clockModule.getSeconds(),clockModule.getMinutes(),clockModule.getHours());
-   signed long currentMillis = millis();
-
-   // intervall to read photocell
-   if (currentMillis - previousMillis >= intervalLED){
-      previousMillis = currentMillis;
-      if(!BRIGHTNESS_STATUS){ 
+   if(!BRIGHTNESS_STATUS){ 
         BRIGHTNESS_VALUE = photocellSensor.readPhotocell();       
-      }else{ 
-                     
       }
-   }
-   
+   led.setLedTime(clockModule.getSeconds(),clockModule.getMinutes(),clockModule.getHours());
+      
    //update time from ntp
    if(clockModule.getHours() == updateHours && clockModule.getMinutes() == updateMinutes && clockModule.getSeconds() == updateSeconds) {
       clockModule.getNTP();
-   }  
+   }
 }
 
 

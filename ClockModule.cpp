@@ -70,10 +70,9 @@ bool ClockModule::checkTime() {
     epoch = secsSince1900 - seventyYears;
     LastNTP = millis();
     timeCheckLoop = 0;
+    Serial.print("epoch = ");
+    Serial.println(epoch);
   
-    //Set RTC
-    setRTC();
-
     //Update for timezone
     String hourstr = String(hour(epoch) + TIMEZONE);
     String minstr = String(minute(epoch));
@@ -84,6 +83,9 @@ bool ClockModule::checkTime() {
     Serial.print("Unix time = ");
     Serial.println(hourstr + ":" + minstr + ":" + secondstr + ", " + daystr + "." + monthstr + "." + yearstr );
    
+    //Set RTC
+    setRTC();
+    
     return true;
     }
 }

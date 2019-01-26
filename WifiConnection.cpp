@@ -1,10 +1,10 @@
 #include "WifiConnection.h"
 
 WifiConnection::WifiConnection():server(80) {
+  pinMode(pinWifiLed, OUTPUT);
 }
 
 void WifiConnection::Start() {
-  //pinMode(13, OUTPUT);
   wifiManager.setBreakAfterConfig(true);
  
   if (!wifiManager.autoConnect("WallClock", "")) {
@@ -28,7 +28,8 @@ void WifiConnection::Start() {
   MDNS.addService("http", "tcp", 80);
 }
 
-void WifiConnection::WifiTraffic() {  
+void WifiConnection::WifiTraffic() {
+  setLED();  
   WiFiClient client = server.available();
   if (client) {
     bool success = readRequest(client);
@@ -105,6 +106,22 @@ bool WifiConnection::readRequest(WiFiClient& client) {
       return false;
     }
     String HTML(HTML_String);
+
+    if(HTML.indexOf("RED_RGB") > 0){
+      RED_RGB = PickParameter("RED_RGB=", HTML_String);
+      EEPROM.write(addr_red, RED_RGB);
+      boolCommit = true;
+    }
+     if(HTML.indexOf("GREEN_RGB") > 0){
+      GREEN_RGB = PickParameter("GREEN_RGB=", HTML_String);
+      EEPROM.write(addr_green, GREEN_RGB);
+      boolCommit = true;
+    }
+     if(HTML.indexOf("BLUE_RGB") > 0){
+      BLUE_RGB = PickParameter("BLUE_RGB=", HTML_String);
+      EEPROM.write(addr_blue, BLUE_RGB);
+      boolCommit = true;
+    }
     
     if(HTML.indexOf("STATE_STATUS") > 0){
       STATE_STATUS = PickParameter("STATE_STATUS=", HTML_String);
@@ -126,21 +143,7 @@ bool WifiConnection::readRequest(WiFiClient& client) {
       EEPROM.write(addr_brightness, BRIGHTNESS_VALUE);
       boolCommit = true;
     }
-     if(HTML.indexOf("RED_RGB") > 0){
-      RED_RGB = PickParameter("RED_RGB=", HTML_String);
-      EEPROM.write(addr_red, RED_RGB);
-      boolCommit = true;
-    }
-     if(HTML.indexOf("GREEN_RGB") > 0){
-      GREEN_RGB = PickParameter("GREEN_RGB=", HTML_String);
-      EEPROM.write(addr_green, GREEN_RGB);
-      boolCommit = true;
-    }
-     if(HTML.indexOf("BLUE_RGB") > 0){
-      BLUE_RGB = PickParameter("BLUE_RGB=", HTML_String);
-      EEPROM.write(addr_blue, BLUE_RGB);
-      boolCommit = true;
-    }
+
 
     if(boolCommit == true){
        EEPROM.commit();   
@@ -167,6 +170,16 @@ void WifiConnection::sendNotFound() {
   delay(20);
   client.stop();
 }
+
+void WifiConnection::setLED() {
+  if(WiFi.status() == WL_CONNECTED){
+    digitalWrite(pinWifiLed, HIGH);
+  } else {
+    digitalWrite(pinWifiLed, LOW);
+  }
+}
+
+
 
 int WifiConnection::PickParameter(const char * par, char * str) {
   int myIdx = FindEnd(par, str);

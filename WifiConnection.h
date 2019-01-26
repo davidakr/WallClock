@@ -8,6 +8,9 @@
 #include "BufferedPrint.h"
 #include "GlobalProperties.h"
 #include "EEPROM.h"
+#include "DNSServer.h"
+#include "ESP8266WebServer.h"
+#include "ESP8266WiFi.h"
  
 class WifiConnection {
   public:
@@ -15,6 +18,7 @@ class WifiConnection {
     void beginWifi();
     void Start();
     void WifiTraffic();
+    void setLED();
 
   private:
     int pinWifiLed = 16;

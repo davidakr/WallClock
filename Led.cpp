@@ -3,6 +3,8 @@
 void Led::Setup() {
   delay(2000); // power-up safety delay
   pixels.begin(); // This initializes the NeoPixel library.
+  pixels.setBrightness(10);
+  pixels.show();
   Serial.println("Leds initialized");
 }
 
@@ -116,8 +118,13 @@ void Led::setLedTime(int seconds, int minutes, int hours){
     case 9: setLedPixel(nine,sizeof(nine)/sizeof(*nine), 109); break;     
   }
 
+  int currentBrightness = 0.85*BRIGHTNESS_VALUE;
   if(STATE_STATUS){
-    pixels.setBrightness(BRIGHTNESS_VALUE);
+    if(currentBrightness < 10) {
+      pixels.setBrightness(10);
+    } else {
+      pixels.setBrightness(currentBrightness);
+    }   
   } else {
     pixels.setBrightness(0);
   }

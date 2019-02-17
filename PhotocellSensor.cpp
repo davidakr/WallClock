@@ -12,7 +12,7 @@ int PhotocellSensor::readPhotocell() {
       avgPhoto[i]  = avgPhoto[i - 1];   
     }
     int analogValue = (analogRead(photocellPin)-5)/4;
-    avgPhoto[0] = max(calculateValue(analogValue), minValue);
+    avgPhoto[0] = calculateValue(analogValue);
     for (int i = 0; i < sizeArray; i++) {      
        sum += avgPhoto[i];
     }

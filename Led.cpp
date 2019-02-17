@@ -118,13 +118,8 @@ void Led::setLedTime(int seconds, int minutes, int hours){
     case 9: setLedPixel(nine,sizeof(nine)/sizeof(*nine), 109); break;     
   }
 
-  int currentBrightness = 0.85*BRIGHTNESS_VALUE;
-  if(STATE_STATUS){
-    if(currentBrightness < 10) {
-      pixels.setBrightness(10);
-    } else {
-      pixels.setBrightness(currentBrightness);
-    }   
+  if(STATE_STATUS){   
+    pixels.setBrightness(max(0.85*BRIGHTNESS_VALUE, 3.00));
   } else {
     pixels.setBrightness(0);
   }

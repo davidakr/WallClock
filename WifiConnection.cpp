@@ -203,4 +203,3 @@ int WifiConnection::PickDec(const char * tx, int idx ) {
   }
   return tmp;
 }
-

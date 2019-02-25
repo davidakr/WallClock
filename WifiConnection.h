@@ -32,8 +32,7 @@ class WifiConnection {
     int FindEnd(const char * such, const char * str);
     int PickDec(const char * tx, int idx );
     int PickParameter(const char * par, char * str);
-    void sendNotFound();
-    
+    void sendNotFound();    
 };
 
 #endif

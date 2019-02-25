@@ -29,7 +29,7 @@ void WifiConnection::Start() {
 }
 
 void WifiConnection::WifiTraffic() {
-  setLED();  
+  setLED(); 
   WiFiClient client = server.available();
   if (client) {
     bool success = readRequest(client);
@@ -48,9 +48,10 @@ void WifiConnection::WifiTraffic() {
       BufferedPrint<450> bufferedPrint(client);
       json.printTo(bufferedPrint);
     }
-    delay(1);
-    client.stop();
-  }  
+    delay(1);   
+  } else {
+    client.stop();  
+  }
 }
 
 JsonObject& WifiConnection::prepareResponse(JsonBuffer& jsonBuffer) {

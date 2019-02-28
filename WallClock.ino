@@ -48,6 +48,9 @@ void setup() {
   Serial.begin(115200);
   Serial.println("WallClock");
 
+  ESP.wdtDisable();
+  ESP.wdtEnable(2000);
+
   // get initial values from EEPROM
   STATE_STATUS = EEPROM.read(addr_STATE_STATUS);
   BRIGHTNESS_STATUS = EEPROM.read(addr_BRIGHTNESS_STATUS);
@@ -77,6 +80,3 @@ void loop() {
       clockModule.getNTP();
    }
 }
-
-
-

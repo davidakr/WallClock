@@ -39,8 +39,8 @@ int updateMinutes = 0;
 int updateSeconds = 0;
 
 //timer variables
-unsigned long previousMillis = 0;        
-const long intervalLED = 250; 
+unsigned long previousMillis = 0;
+const long intervalLED = 250;
 
 
 void setup() {
@@ -66,21 +66,21 @@ void setup() {
 }
 
 void loop() {
-   wifiConnection.WifiTraffic();
-   delay(10); 
-   if(!BRIGHTNESS_STATUS){
-        int newValue = photocellSensor.readPhotocell();
-        int diffValue = newValue - BRIGHTNESS_VALUE;
-        if (diffValue > 10 || diffValue < 10) {
-          BRIGHTNESS_VALUE = newValue;
-        }              
-      }
-   delay(10);   
-   led.setLedTime(clockModule.getSeconds(),clockModule.getMinutes(),clockModule.getHours());
-   delay(10);   
-   //update time from ntp
-   if(clockModule.getHours() == updateHours && clockModule.getMinutes() == updateMinutes && clockModule.getSeconds() == updateSeconds) {
-      clockModule.getNTP();
-   }
-   delay(10);
+  wifiConnection.WifiTraffic();
+  delay(10);
+  if (!BRIGHTNESS_STATUS) {
+    int newValue = photocellSensor.readPhotocell();
+    int diffValue = newValue - BRIGHTNESS_VALUE;
+    if (diffValue > 10 || diffValue < 10) {
+      BRIGHTNESS_VALUE = newValue;
+    }
+  }
+  delay(10);
+  led.setLedTime(clockModule.getSeconds(), clockModule.getMinutes(), clockModule.getHours());
+  delay(10);
+  //update time from ntp
+  if (clockModule.getHours() == updateHours && clockModule.getMinutes() == updateMinutes && clockModule.getSeconds() == updateSeconds) {
+    clockModule.getNTP();
+  }
+  delay(10);
 }

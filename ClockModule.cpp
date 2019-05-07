@@ -1,6 +1,6 @@
 #include "ClockModule.h"
 
-ClockModule::ClockModule():timeServer(129, 6, 15, 28) {
+ClockModule::ClockModule(): timeServer(129, 6, 15, 28) {
 }
 
 void ClockModule::Setup() {
@@ -11,7 +11,7 @@ void ClockModule::Setup() {
   Serial.println("Starting UDP");
   udp.begin(localPort);
   //Serial.print("Local port: ");
-  //Serial.println(udp.localPort()); 
+  //Serial.println(udp.localPort());
 }
 
 void ClockModule::requestTime() {
@@ -72,7 +72,7 @@ bool ClockModule::checkTime() {
     timeCheckLoop = 0;
     Serial.print("epoch = ");
     Serial.println(epoch);
-  
+
     //Update for timezone
     String hourstr = String(hour(epoch) + TIMEZONE);
     String minstr = String(minute(epoch));
@@ -82,28 +82,28 @@ bool ClockModule::checkTime() {
     String daystr = String(day(epoch));
     Serial.print("Unix time = ");
     Serial.println(hourstr + ":" + minstr + ":" + secondstr + ", " + daystr + "." + monthstr + "." + yearstr );
-   
+
     //Set RTC
     setRTC();
-    
+
     return true;
-    }
+  }
 }
 
 bool ClockModule::isDST(int days, int months, int dow, int hours) {
   boolean pm = false;
-  if (hours > 12){                                  // 12h am/pm
+  if (hours > 12) {                                 // 12h am/pm
     hours -= 12;
     pm = true;
-  } 
-  
-  if(months <= 2 || months >= 11)
+  }
+
+  if (months <= 2 || months >= 11)
     return false;                                   // Winter months
-  if(months >= 4 && months <= 9)
+  if (months >= 4 && months <= 9)
     return true;                                    // Summer months
   /***  Detect the beginning of the DST in March ***/
-  if(months == 3 && (days - dow >= 25)) {             // Begin of summer time
-    if(pm == false && hours >= 3-1 || pm == true){
+  if (months == 3 && (days - dow >= 25)) {            // Begin of summer time
+    if (pm == false && hours >= 3 - 1 || pm == true) {
       return true;                                  // MESZ – 1 hour
     } else {
       return false;
@@ -112,16 +112,16 @@ bool ClockModule::isDST(int days, int months, int dow, int hours) {
     return false;
   }
   // Still summer months time DST beginning of October
-  if(months == 10 && days - dow < 25){
+  if (months == 10 && days - dow < 25) {
     return true;                                    // Summer months anyway until 24th of October
   }
-                                  
+
   //Test the begin of the winter time in October
-  if(months == 10 && days - dow >= 25) {
-    if(pm == false && hours >= 3-1 || pm == true) {        
-      return false; 
-    } else {         
-       return true;
+  if (months == 10 && days - dow >= 25) {
+    if (pm == false && hours >= 3 - 1 || pm == true) {
+      return false;
+    } else {
+      return true;
     }
   }
 }
@@ -133,14 +133,14 @@ void ClockModule::setRTC() {
   Clock.setYear(year(epoch));
   Clock.setMonth(month(epoch));
   Clock.setDoW(weekday(epoch));
-  
-  //Check for DST   
+
+  //Check for DST
   if (isDST(day(epoch), month(epoch), weekday(epoch), hour(epoch) + TIMEZONE)) {
     Serial.println("We have summer time");
-    Clock.setHour(Clock.getHour(h12, PM)+1);
+    Clock.setHour(Clock.getHour(h12, PM) + 1);
   } else {
     Serial.println("We have winter time");
-  }   
+  }
 }
 
 void ClockModule::getNTP() {
@@ -159,19 +159,19 @@ int ClockModule::getSeconds() {
   //ESP.wdtDisable();
   int currentSecond = Clock.getSecond();
   //ESP.wdtEnable(2000);
-  return currentSecond; 
+  return currentSecond;
 }
 
 int ClockModule::getMinutes() {
   //ESP.wdtDisable();
   int currentMinute = Clock.getMinute();
   //ESP.wdtEnable(2000);
-  return currentMinute;  
+  return currentMinute;
 }
 
 int ClockModule::getHours() {
   //ESP.wdtDisable();
-  int currentHour = Clock.getHour(h12, PM); 
+  int currentHour = Clock.getHour(h12, PM);
   //ESP.wdtEnable(2000);
-  return currentHour;  
+  return currentHour;
 }

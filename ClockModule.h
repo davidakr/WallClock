@@ -10,7 +10,7 @@
 
 class ClockModule {
   public:
-    ClockModule(); 
+    ClockModule();
     void Setup();
     void getNTP();
     int getSeconds();

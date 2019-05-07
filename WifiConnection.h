@@ -3,7 +3,7 @@
 
 #include "WiFiManager.h"
 #include "Arduino.h"
-#include "ESP8266mDNS.h" 
+#include "ESP8266mDNS.h"
 #include "ArduinoJson.h"
 #include "BufferedPrint.h"
 #include "GlobalProperties.h"
@@ -11,7 +11,7 @@
 #include "DNSServer.h"
 #include "ESP8266WebServer.h"
 #include "ESP8266WiFi.h"
- 
+
 class WifiConnection {
   public:
     WifiConnection();
@@ -32,7 +32,7 @@ class WifiConnection {
     int FindEnd(const char * such, const char * str);
     int PickDec(const char * tx, int idx );
     int PickParameter(const char * par, char * str);
-    void sendNotFound();    
+    void sendNotFound();
 };
 
 #endif

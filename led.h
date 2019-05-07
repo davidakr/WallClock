@@ -9,14 +9,14 @@
 #define NUM_LEDS              130
 #define UPDATES_PER_SECOND    100
 
- 
+
 class Led {
   public:
     void Setup();
     void setLedTime(int seconds, int minutes, int hours);
-    
+
   private:
-    Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_LEDS ,LED_PIN, NEO_RGB + NEO_KHZ800);
+    Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_LEDS , LED_PIN, NEO_RGB + NEO_KHZ800);
     void setLedPixel(int arrayInt[], int arraySize, int toAdd);
     boolean arrayIncludeElement(int arrayInt[], int element);
 
@@ -32,7 +32,7 @@ class Led {
     int seven[9] = { 0, 1, 2, 3, 4, 5, 15, 16, 17};
     int eight[21] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
     int nine[18] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-    int dot[2] = {0,1};
+    int dot[2] = {0, 1};
 };
 
 #endif

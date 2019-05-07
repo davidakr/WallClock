@@ -145,7 +145,6 @@ bool WifiConnection::readRequest(WiFiClient& client) {
       boolCommit = true;
     }
 
-
     if(boolCommit == true){
        EEPROM.commit();   
     }

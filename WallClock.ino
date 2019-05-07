@@ -48,9 +48,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("WallClock");
 
-  ESP.wdtDisable();
-  ESP.wdtEnable(2000);
-
   // get initial values from EEPROM
   STATE_STATUS = EEPROM.read(addr_STATE_STATUS);
   BRIGHTNESS_STATUS = EEPROM.read(addr_BRIGHTNESS_STATUS);
@@ -70,13 +67,20 @@ void setup() {
 
 void loop() {
    wifiConnection.WifiTraffic();
-   if(!BRIGHTNESS_STATUS){ 
-        BRIGHTNESS_VALUE = photocellSensor.readPhotocell();       
+   delay(10); 
+   if(!BRIGHTNESS_STATUS){
+        int newValue = photocellSensor.readPhotocell();
+        int diffValue = newValue - BRIGHTNESS_VALUE;
+        if (diffValue > 10 || diffValue < 10) {
+          BRIGHTNESS_VALUE = newValue;
+        }              
       }
+   delay(10);   
    led.setLedTime(clockModule.getSeconds(),clockModule.getMinutes(),clockModule.getHours());
-      
+   delay(10);   
    //update time from ntp
    if(clockModule.getHours() == updateHours && clockModule.getMinutes() == updateMinutes && clockModule.getSeconds() == updateSeconds) {
       clockModule.getNTP();
    }
+   delay(10);
 }

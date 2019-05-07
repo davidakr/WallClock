@@ -11,7 +11,11 @@ int PhotocellSensor::readPhotocell() {
     for (int i = sizeArray - 1; i > 0; i--) {    
       avgPhoto[i]  = avgPhoto[i - 1];   
     }
+    
+    //ESP.wdtDisable();
     int analogValue = (analogRead(photocellPin)-5)/4;
+    //ESP.wdtEnable(2000);
+    
     avgPhoto[0] = calculateValue(analogValue);
     for (int i = 0; i < sizeArray; i++) {      
        sum += avgPhoto[i];
@@ -25,4 +29,3 @@ int PhotocellSensor::readPhotocell() {
 int PhotocellSensor::calculateValue (int number) {
   return number*number/255;
 }
-

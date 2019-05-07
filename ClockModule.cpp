@@ -10,8 +10,8 @@ void ClockModule::Setup() {
 
   Serial.println("Starting UDP");
   udp.begin(localPort);
-  Serial.print("Local port: ");
-  Serial.println(udp.localPort()); 
+  //Serial.print("Local port: ");
+  //Serial.println(udp.localPort()); 
 }
 
 void ClockModule::requestTime() {
@@ -102,10 +102,14 @@ bool ClockModule::isDST(int days, int months, int dow, int hours) {
   if(months >= 4 && months <= 9)
     return true;                                    // Summer months
   /***  Detect the beginning of the DST in March ***/
-  if(months == 3 && days - dow >= 25) {             // Begin of summer time
+  if(months == 3 && (days - dow >= 25)) {             // Begin of summer time
     if(pm == false && hours >= 3-1 || pm == true){
       return true;                                  // MESZ – 1 hour
+    } else {
+      return false;
     }
+  } else {
+    return false;
   }
   // Still summer months time DST beginning of October
   if(months == 10 && days - dow < 25){
@@ -131,7 +135,7 @@ void ClockModule::setRTC() {
   Clock.setDoW(weekday(epoch));
   
   //Check for DST   
-  if (isDST(day(epoch), month(epoch), weekday(epoch),hour(epoch) + TIMEZONE)) {
+  if (isDST(day(epoch), month(epoch), weekday(epoch), hour(epoch) + TIMEZONE)) {
     Serial.println("We have summer time");
     Clock.setHour(Clock.getHour(h12, PM)+1);
   } else {
@@ -152,14 +156,22 @@ void ClockModule::getNTP() {
 }
 
 int ClockModule::getSeconds() {
-  return Clock.getSecond(); 
+  //ESP.wdtDisable();
+  int currentSecond = Clock.getSecond();
+  //ESP.wdtEnable(2000);
+  return currentSecond; 
 }
 
 int ClockModule::getMinutes() {
-  return Clock.getMinute(); 
+  //ESP.wdtDisable();
+  int currentMinute = Clock.getMinute();
+  //ESP.wdtEnable(2000);
+  return currentMinute;  
 }
 
 int ClockModule::getHours() {
-  return Clock.getHour(h12, PM); 
+  //ESP.wdtDisable();
+  int currentHour = Clock.getHour(h12, PM); 
+  //ESP.wdtEnable(2000);
+  return currentHour;  
 }
-

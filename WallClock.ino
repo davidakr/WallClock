@@ -73,7 +73,10 @@ void loop() {
     int newValue = photocellSensor.readPhotocell();   
     if (millis() - timestamp > 500) {
       timestamp = millis();
-      BRIGHTNESS_VALUE = newValue;
+      int diffValue = abs(newValue - BRIGHTNESS_VALUE);
+      if(diffValue > 5){
+        BRIGHTNESS_VALUE = newValue;
+      }     
     }
   }
   delay(20);

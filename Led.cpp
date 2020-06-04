@@ -119,7 +119,7 @@ void Led::setLedTime(int seconds, int minutes, int hours) {
   }
 
   if (STATE_STATUS) {
-    pixels.setBrightness(max(0.85 * BRIGHTNESS_VALUE, 3.00));
+    pixels.setBrightness(max(BRIGHTNESS_VALUE, 3));
   } else {
     pixels.setBrightness(0);
   }

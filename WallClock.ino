@@ -45,6 +45,7 @@ unsigned long timestamp = 0;
 
 
 void setup() {
+  led.Setup();
   EEPROM.begin(512);
   Serial.begin(115200);
   Serial.println("WallClock");
@@ -60,7 +61,6 @@ void setup() {
   TIMEZONE = 1;
 
   //general setup
-  led.Setup();
   wifiConnection.Start();
   clockModule.Setup();
   clockModule.getNTP();
@@ -68,7 +68,7 @@ void setup() {
 
 void loop() {
   wifiConnection.WifiTraffic();
-  delay(20);
+  yield();
   if (!BRIGHTNESS_STATUS) {
     int newValue = photocellSensor.readPhotocell();   
     if (millis() - timestamp > 500) {
@@ -79,12 +79,18 @@ void loop() {
       }     
     }
   }
-  delay(20);
+  yield();
   led.setLedTime(clockModule.getSeconds(), clockModule.getMinutes(), clockModule.getHours());
-  delay(10);
+  yield();
   //update time from ntp
   if (clockModule.getHours() == updateHours && clockModule.getMinutes() == updateMinutes && clockModule.getSeconds() == updateSeconds) {
+    int bufferHour = clockModule.getHours();
+    int lowerBound = bufferHour - 2;
+    int upperBound = bufferHour + 2;
     clockModule.getNTP();
+    while (clockModule.getHours() < lowerBound && clockModule.getHours() > upperBound) {
+          clockModule.getNTP();
+    }
   }
-  delay(20);
+  yield();
 }

@@ -3,7 +3,7 @@
 void Led::Setup() {
   delay(2000); // power-up safety delay
   pixels.begin(); // This initializes the NeoPixel library.
-  pixels.setBrightness(10);
+  pixels.setBrightness(0);
   pixels.show();
   Serial.println("Leds initialized");
 }

@@ -5,6 +5,9 @@ WifiConnection::WifiConnection(): server(80) {
 }
 
 void WifiConnection::Start() {
+  WiFi.mode(WIFI_STA);
+  wifiManager.setConfigPortalBlocking(false);
+  wifiManager.setConfigPortalTimeout(60);
   wifiManager.setBreakAfterConfig(true);
 
   if (!wifiManager.autoConnect("WallClock", "")) {
@@ -16,19 +19,13 @@ void WifiConnection::Start() {
   Serial.println("Local IP address: ");
   Serial.println(WiFi.localIP());
 
-  if (!MDNS.begin("clock")) {
-    Serial.println("Error setting up MDNS responder!");
-    while (1) {
-      delay(1000);
-    }
-  }
-  Serial.println("mDNS responder started");
   server.begin();
   Serial.println("Server started");
-  MDNS.addService("http", "tcp", 80);
+  wifiManager.startConfigPortal();
 }
 
 void WifiConnection::WifiTraffic() {
+  wifiManager.process();
   setLED();
   WiFiClient client = server.available();
   if (client) {

@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------
-// WallClock accesible via clock.local/ or local IP
+// WallClock accesible local IP
 //---------------------------------------------------------------------
 #include "Led.h"
 #include "ClockModule.h"
@@ -68,7 +68,7 @@ void setup() {
 
 void loop() {
   wifiConnection.WifiTraffic();
-  yield();
+  yield(); 
   if (!BRIGHTNESS_STATUS) {
     int newValue = photocellSensor.readPhotocell();   
     if (millis() - timestamp > 500) {

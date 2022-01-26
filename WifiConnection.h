@@ -1,14 +1,13 @@
 #ifndef WifiConnection_h
 #define WifiConnection_h
 
+
 #include "WiFiManager.h"
 #include "Arduino.h"
-#include "ESP8266mDNS.h"
 #include "ArduinoJson.h"
 #include "BufferedPrint.h"
 #include "GlobalProperties.h"
 #include "EEPROM.h"
-#include "DNSServer.h"
 #include "ESP8266WebServer.h"
 #include "ESP8266WiFi.h"
 

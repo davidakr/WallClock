@@ -145,9 +145,9 @@ void ClockModule::setRTC() {
 
 void ClockModule::getNTP() {
   requestTime();
-  delay(2000);
+  delay(500);
   while (!checkTime()) {
-    delay(2000);
+    delay(500);
     timeCheckLoop++;
     if (timeCheckLoop > 5) {
       requestTime();

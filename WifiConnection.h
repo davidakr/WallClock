@@ -21,7 +21,6 @@ class WifiConnection {
 
   private:
     int pinWifiLed = 16;
-    char HTML_String[5000];
     WiFiManager wifiManager;
     WiFiServer server;
     WiFiClient client;

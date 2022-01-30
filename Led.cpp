@@ -1,7 +1,6 @@
 #include "Led.h"
 
 void Led::Setup() {
-  delay(2000); // power-up safety delay
   pixels.begin(); // This initializes the NeoPixel library.
   pixels.setBrightness(0);
   pixels.show();
@@ -16,8 +15,31 @@ void Led::setLedPixel(int arrayInt[], int arraySize, int toAdd) {
       }
     }
   }
-  for (int i = 0; i < arraySize; i++) {
-    pixels.setPixelColor(arrayInt[i] + toAdd, GREEN_RGB, RED_RGB, BLUE_RGB);
+  if (PARTY_STATUS) {
+    unsigned long currentMillis = millis();
+
+    if (currentMillis - previousMillis >= TIMER_VALUE) {
+      previousMillis = currentMillis;
+      for (int i = 0; i < sizeof PARTY_BUFFER / sizeof PARTY_BUFFER[0]; i++) {
+        PARTY_BUFFER[i][0] = byte(random(0, 255));
+        PARTY_BUFFER[i][1] = byte(random(0, 255));
+        PARTY_BUFFER[i][2] = byte(random(0, 255));
+      }
+    }
+    if(toAdd > 87){
+      Serial.print(PARTY_BUFFER[toAdd][0]);
+      Serial.print("-");
+      Serial.print(PARTY_BUFFER[toAdd][1]);
+      Serial.print("-");
+      Serial.println(PARTY_BUFFER[toAdd][2]);
+    }
+    for (int i = 0; i < arraySize; i++) {
+      pixels.setPixelColor(arrayInt[i] + toAdd, PARTY_BUFFER[arrayInt[i] + toAdd][1], PARTY_BUFFER[arrayInt[i] + toAdd][0], PARTY_BUFFER[arrayInt[i] + toAdd][2]);
+    }
+  } else {
+    for (int i = 0; i < arraySize; i++) {
+      pixels.setPixelColor(arrayInt[i] + toAdd, GREEN_RGB, RED_RGB, BLUE_RGB);
+    }
   }
 }
 
@@ -119,7 +141,7 @@ void Led::setLedTime(int seconds, int minutes, int hours) {
   }
 
   if (STATE_STATUS) {
-    pixels.setBrightness(max(BRIGHTNESS_VALUE, 3));
+    pixels.setBrightness(max(int(BRIGHTNESS_VALUE), 3));
   } else {
     pixels.setBrightness(0);
   }

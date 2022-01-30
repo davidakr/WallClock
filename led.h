@@ -20,9 +20,13 @@ class Led {
     void setLedPixel(int arrayInt[], int arraySize, int toAdd);
     boolean arrayIncludeElement(int arrayInt[], int element);
 
+    int delayFade = 1000;
+    unsigned long previousMillis = 0;
+    byte PARTY_BUFFER[88][3];
+
     //Numbers for Led Display
     int all[21] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-    int zero [18] = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ,20};
+    int zero [18] = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 , 20};
     int one[6] = {9, 10, 11, 12, 13, 14};
     int two[15] = {0, 1, 2, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20};
     int three[15] = {0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};

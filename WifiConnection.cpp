@@ -7,21 +7,22 @@ WifiConnection::WifiConnection(): server(80) {
 void WifiConnection::Start() {
   WiFi.mode(WIFI_STA);
   wifiManager.setConfigPortalBlocking(false);
-  wifiManager.setConfigPortalTimeout(60);
-  wifiManager.setBreakAfterConfig(true);
+  wifiManager.setConfigPortalTimeout(120);
+  //wifiManager.setBreakAfterConfig(true);
 
-  if (!wifiManager.autoConnect("WallClock", "")) {
-    Serial.println("failed to connect, we should reset as see if it connects");
-    delay(3000);
-    ESP.reset();
-    delay(5000);
+  if (wifiManager.autoConnect("LedClock")) {
+    Serial.println("Connected via autoConnect");
+  } 
+  else {
+    wifiManager.startConfigPortal();
+    Serial.println("Configportal running");
+    //ESP.restart();
   }
   Serial.println("Local IP address: ");
   Serial.println(WiFi.localIP());
 
   server.begin();
   Serial.println("Server started");
-  wifiManager.startConfigPortal();
 }
 
 void WifiConnection::WifiTraffic() {
@@ -63,6 +64,8 @@ JsonObject& WifiConnection::prepareResponse(JsonBuffer& jsonBuffer) {
   root["BRIGHTNESS_VALUE"] = BRIGHTNESS_VALUE;
   root["TIMEZONE"] = TIMEZONE;
   root["TEMPERATURE"] = TEMPERATURE;
+  root["FADE_STATUS"] = FADE_STATUS;
+  root["PARTY_STATUS"] = PARTY_STATUS;
   //  root["HOUR"] = Clock.getHour(h12, PM);
   //  root["MINUTE"] = Clock.getMinute();
   //  root["SECOND"] =  Clock.getSecond();
@@ -85,16 +88,19 @@ bool WifiConnection::readRequest(WiFiClient& client) {
   while (!client.available() && (millis() < my_timeout) ) delay(10);
   delay(10);
   if (millis() > my_timeout)  {
+    client.stop();
     return false;
   }
   //---------------------------------------------------------------------
   htmlPtr = 0;
   my_char = 0;
+  char HTML_String[1000];
   while (client.available() && my_char != '\r') {
     my_char = client.read();
     HTML_String[htmlPtr++] = my_char;
   }
   client.flush();
+
   HTML_String[htmlPtr] = 0;
 #ifdef BGTDEBUG
   exhibit ("Request : ", HTML_String);
@@ -103,42 +109,51 @@ bool WifiConnection::readRequest(WiFiClient& client) {
     sendNotFound();
     return false;
   }
-  String HTML(HTML_String);
 
-  if (HTML.indexOf("RED_RGB") > 0) {
+  if (strstr (HTML_String, "RED_RGB")) {
     RED_RGB = PickParameter("RED_RGB=", HTML_String);
     EEPROM.write(addr_red, RED_RGB);
     boolCommit = true;
   }
-  if (HTML.indexOf("GREEN_RGB") > 0) {
+  if (strstr (HTML_String, "GREEN_RGB")) {
     GREEN_RGB = PickParameter("GREEN_RGB=", HTML_String);
     EEPROM.write(addr_green, GREEN_RGB);
     boolCommit = true;
   }
-  if (HTML.indexOf("BLUE_RGB") > 0) {
+  if (strstr (HTML_String, "BLUE_RGB")) {
     BLUE_RGB = PickParameter("BLUE_RGB=", HTML_String);
     EEPROM.write(addr_blue, BLUE_RGB);
     boolCommit = true;
   }
 
-  if (HTML.indexOf("STATE_STATUS") > 0) {
+  if (strstr (HTML_String, "STATE_STATUS")) {
     STATE_STATUS = PickParameter("STATE_STATUS=", HTML_String);
-    EEPROM.write(addr_STATE_STATUS, STATE_STATUS);
+    EEPROM.write(addr_state_status, STATE_STATUS);
     boolCommit = true;
   }
-  if (HTML.indexOf("TIMEZONE") > 0) {
+  if (strstr (HTML_String, "TIMEZONE")) {
     TIMEZONE = PickParameter("TIMEZONE=", HTML_String);
     EEPROM.write(addr_timezone, TIMEZONE);
     boolCommit = true;
   }
-  if (HTML.indexOf("BRIGHTNESS_STATUS") > 0) {
+  if (strstr (HTML_String, "BRIGHTNESS_STATUS")) {
     BRIGHTNESS_STATUS = PickParameter("BRIGHTNESS_STATUS=", HTML_String);
-    EEPROM.write(addr_BRIGHTNESS_STATUS, BRIGHTNESS_STATUS);
+    EEPROM.write(addr_brightness_status, BRIGHTNESS_STATUS);
     boolCommit = true;
   }
-  if (HTML.indexOf("BRIGHTNESS_VALUE") > 0) {
+  if (strstr (HTML_String, "BRIGHTNESS_VALUE")) {
     BRIGHTNESS_VALUE = PickParameter("BRIGHTNESS_VALUE=", HTML_String);
     EEPROM.write(addr_brightness, BRIGHTNESS_VALUE);
+    boolCommit = true;
+  }
+  if (strstr (HTML_String, "FADE_STATUS")) {
+    FADE_STATUS = PickParameter("FADE_STATUS=", HTML_String);
+    EEPROM.write(addr_fade_status, FADE_STATUS);
+    boolCommit = true;
+  }
+  if (strstr (HTML_String, "PARTY_STATUS")) {
+    PARTY_STATUS = PickParameter("PARTY_STATUS=", HTML_String);
+    EEPROM.write(addr_party_status, PARTY_STATUS);
     boolCommit = true;
   }
 

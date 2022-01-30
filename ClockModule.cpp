@@ -127,9 +127,10 @@ bool ClockModule::isDST(int days, int months, int dow, int hours) {
 }
 
 void ClockModule::setRTC() {
-  Clock.setHour(hour(epoch) + TIMEZONE);
-  Clock.setMinute(minute(epoch));
   Clock.setSecond(second(epoch));
+  Clock.setMinute(minute(epoch));
+  Clock.setHour(hour(epoch) + TIMEZONE);
+
   Clock.setYear(year(epoch));
   Clock.setMonth(month(epoch));
   Clock.setDoW(weekday(epoch));
@@ -147,10 +148,11 @@ void ClockModule::getNTP() {
   requestTime();
   delay(500);
   while (!checkTime()) {
-    delay(500);
+    delay(2000);
     timeCheckLoop++;
     if (timeCheckLoop > 5) {
-      requestTime();
+      Serial.println("Will restart because no NTP package arrived");
+      ESP.restart();
     }
   }
 }

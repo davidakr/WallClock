@@ -52,7 +52,7 @@ boolean Led::arrayIncludeElement(int arrayInt[], int element) {
   return false;
 }
 
-void Led::setLedTime(int seconds, int minutes, int hours) {
+void Led::setLedTime(int hours, int minutes, int seconds) {
 
   int einerSekunde = seconds % 10;
   int zehnerSekunde = seconds / 10;

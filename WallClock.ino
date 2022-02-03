@@ -2,14 +2,16 @@
 // WallClock accesible local IP
 //---------------------------------------------------------------------
 #include "Led.h"
-#include "ClockModule.h"
 #include "GlobalProperties.h"
 #include "PhotocellSensor.h"
 #include "WifiConnection.h"
-#include "EEPROM.h"
+#include "ESP_EEPROM.h"
+#include "time.h"
+#include "coredecls.h"
+#include "ESP8266WiFi.h"
+#include "sys/time.h"
 
 Led led;
-ClockModule clockModule;
 WifiConnection wifiConnection;
 PhotocellSensor photocellSensor;
 
@@ -47,6 +49,28 @@ unsigned long previousMillis = 0;
 const long intervalLED = 250;
 unsigned long timestamp = 0;
 
+const char *TZstr = "CET-1CEST,M3.5.0,M10.5.0/3";
+
+timeval cbtime;      // when time set callback was called
+bool cbtime_set = false;
+
+timeval tv;
+struct timezone tz;
+time_t tnow;
+
+void time_is_set (void)
+{
+  time_t t = time (nullptr);
+
+  gettimeofday (&cbtime, NULL);
+  cbtime_set = true;
+  Serial.println
+    ("------------------ settimeofday() was called ------------------");
+  printf (" local asctime: %s\n",
+   asctime (localtime (&t))); // print formated local time
+
+  // set RTC using t if desired
+}
 
 void setup() {
   Serial.begin(115200);
@@ -54,26 +78,34 @@ void setup() {
   EEPROM.begin(512);
 
   // get initial values from EEPROM
-  byte STATE_STATUS = EEPROM.read(addr_state_status);
-  byte BRIGHTNESS_STATUS = EEPROM.read(addr_brightness_status);
-  byte BRIGHTNESS_VALUE = EEPROM.read(addr_brightness);
-  byte RED_RGB = EEPROM.read(addr_red);
-  byte GREEN_RGB = EEPROM.read(addr_green);
-  byte BLUE_RGB = EEPROM.read(addr_blue);
-  byte FADE_STATUS = EEPROM.read(addr_fade_status);
-  byte PARTY_STATUS = EEPROM.read(addr_party_status);
-  //TIMEZONE = EEPROM.read(addr_timezone);
-  byte TIMEZONE = 1;
+  EEPROM.get(addr_state_status, STATE_STATUS);
+  EEPROM.get(addr_brightness_status, BRIGHTNESS_STATUS);
+  EEPROM.get(addr_brightness, BRIGHTNESS_VALUE);
+  EEPROM.get(addr_red, RED_RGB);
+  EEPROM.get(addr_green, GREEN_RGB);
+  EEPROM.get(addr_blue, BLUE_RGB);
+  EEPROM.get(addr_fade_status, FADE_STATUS);
+  EEPROM.get(addr_party_status, PARTY_STATUS);
+  //TIMEZONE = EEPROM.get(addr_timezone);
+  TIMEZONE = 1;
 
   //general setup
   led.Setup();
   wifiConnection.Start();
-  clockModule.Setup();
-  clockModule.getNTP();
+  //time setup
+  settimeofday_cb (time_is_set);
+  configTime (TZstr, "pool.ntp.org");
 }
 
 void loop() {
   wifiConnection.WifiTraffic();
+  if(!cbtime_set)   // don't do anything until NTP has set time
+    return;
+  
+  gettimeofday (&tv, &tz);
+  tnow = time (nullptr);
+  tm* tm= localtime (&tnow);
+
   yield();
   if (!BRIGHTNESS_STATUS) {
     int newValue = photocellSensor.readPhotocell();
@@ -86,18 +118,7 @@ void loop() {
     }
   }
   yield();
-  led.setLedTime(clockModule.getSeconds(), clockModule.getMinutes(), clockModule.getHours());
+  led.setLedTime(tm->tm_hour, tm->tm_min, tm->tm_sec);
   yield();
-  //update time from ntp
-  if (clockModule.getHours() == updateHours && clockModule.getMinutes() == updateMinutes && clockModule.getSeconds() == updateSeconds) {
-    int bufferHour = clockModule.getHours();
-    int lowerBound = bufferHour - 2;
-    int upperBound = bufferHour + 2;
-    clockModule.getNTP();
-    while (clockModule.getHours() < lowerBound && clockModule.getHours() > upperBound) {
-      clockModule.getNTP();
-    }
-  }
-  yield();
-  //Serial.println(ESP.getFreeHeap(), DEC);
+  //Serial.println(ESP.getFreeHeap(), DEC);*/
 }
